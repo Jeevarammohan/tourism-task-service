@@ -6,13 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
 
 import com.task.model.Priority;
 import com.task.model.Status;
 import com.task.model.Task;
 import com.task.model.TravelAgent;
-import com.task.service.TaskService;
+import com.task.service.ITaskService;
 
 /**
  * @author JeevaR
@@ -26,8 +29,14 @@ public class TourismTaskServiceApplication implements CommandLineRunner {
 		SpringApplication.run(TourismTaskServiceApplication.class, args);
 	}
 
+	@Bean
+	@LoadBalanced
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
+
 	@Autowired
-	private TaskService taskService;
+	private ITaskService taskService;
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -40,8 +49,8 @@ public class TourismTaskServiceApplication implements CommandLineRunner {
 		task.setCategory("House Keeping");
 		task.setPriority(Priority.LOW);
 		task.setStatus(Status.DEFINED);
-		TravelAgent agent=new TravelAgent();
-		
+		TravelAgent agent = new TravelAgent();
+
 		System.out.println(taskService.addTask(task));
 
 	}

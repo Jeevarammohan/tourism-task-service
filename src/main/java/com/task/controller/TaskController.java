@@ -12,21 +12,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.task.model.Task;
-import com.task.service.TaskService;
+import com.task.model.Worker;
+import com.task.service.ITaskService;
 
 /**
  * @author JeevaR
  *
  */
 @RestController
-@RequestMapping("/task-api")
+@RequestMapping("/task-service")
 public class TaskController {
 
 	@Autowired
-	TaskService taskService;
+	ITaskService taskService;
 
 	@PostMapping("/tasks")
 	ResponseEntity<Task> addTask(@RequestBody Task task) {
@@ -45,7 +47,7 @@ public class TaskController {
 		return ResponseEntity.ok().headers(headers).build();
 	}
 
-	@DeleteMapping("/tasks/taskid/{taskId}")
+	@DeleteMapping("/tasks/task-id/{taskId}")
 	ResponseEntity<Void> deleteTask(@PathVariable("taskId") Integer taskId) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("desc", "Task is deleted");
@@ -100,4 +102,47 @@ public class TaskController {
 		List<Task> taskList = taskService.getByStatus(status);
 		return ResponseEntity.ok().body(taskList);
 	}
+
+	@PutMapping("/tasks/workers")
+	ResponseEntity<String> updateWorker(@RequestBody Worker worker) {
+		String response = taskService.updateWorker(worker);
+		return ResponseEntity.ok().body(response);
+	}
+
+	@GetMapping("/tasks/workers/{workerId}")
+	ResponseEntity<Worker> getWorkerById(@PathVariable("workerId") int workerId) {
+		Worker worker = taskService.getWorkerById(workerId);
+		return ResponseEntity.ok().body(worker);
+	}
+
+	@GetMapping("/tasks/workers")
+	ResponseEntity<List<Worker>> getAllWorkers() {
+		List<Worker> allWorkers = taskService.getAllWorkers();
+		return ResponseEntity.ok().body(allWorkers);
+	}
+
+	@GetMapping("/tasks/workers/worker-name/{workerName}")
+	ResponseEntity<List<Worker>> getWorkerByName(@PathVariable("workername") String workerName) {
+		List<Worker> workersByName = taskService.getWorkerByName(workerName);
+		return ResponseEntity.ok().body(workersByName);
+	}
+
+	@GetMapping("/tasks/workers/type/{type}")
+	ResponseEntity<List<Worker>> getWorkerByType(@PathVariable("type") String type) {
+		List<Worker> workersByType = taskService.getWorkerByType(type);
+		return ResponseEntity.ok().body(workersByType);
+	}
+
+	@GetMapping("/tasks/workers/availability/{availability}")
+	ResponseEntity<List<Worker>> getWorkerByAvailability(@PathVariable("availability") String availability) {
+		List<Worker> workersByAvailabilty = taskService.getWorkerByAvailability(availability);
+		return ResponseEntity.ok().body(workersByAvailabilty);
+	}
+
+	@GetMapping("/tasks/workers/no-task")
+	ResponseEntity<List<Worker>> getWorkerByNoTask() {
+		List<Worker> workersWithNoTask = taskService.getWorkerByNoTask();
+		return ResponseEntity.ok().body(workersWithNoTask);
+	}
+
 }

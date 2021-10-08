@@ -59,9 +59,6 @@ public class Task {
 	@JoinColumn(name = "package_id")
 	private TravelPackage travelPackage;
 	
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "task_id")
-	private Set<Worker> workers;
 	
 
 }

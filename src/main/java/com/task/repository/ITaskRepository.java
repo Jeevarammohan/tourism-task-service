@@ -12,7 +12,7 @@ import com.task.model.Task;
  *
  */
 @Repository
-public interface TaskRepository extends JpaRepository<Task, Integer> {
+public interface ITaskRepository extends JpaRepository<Task, Integer> {
 
 	List<Task> findByOwner(String owner);
 
