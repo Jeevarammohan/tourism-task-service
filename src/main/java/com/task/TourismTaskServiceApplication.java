@@ -40,18 +40,18 @@ public class TourismTaskServiceApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Task task = new Task();
-		task.setTaskName("Clean the room");
-		task.setOwner("Prasanna");
-		task.setStartDate(LocalDateTime.of(2021, 10, 03, 10, 20));
-		task.setEndDate(LocalDateTime.of(2021, 11, 04, 12, 34));
-		task.setDuration(50);
-		task.setCategory("House Keeping");
-		task.setPriority(Priority.LOW);
-		task.setStatus(Status.DEFINED);
-		TravelAgent agent = new TravelAgent();
-
-		System.out.println(taskService.addTask(task));
+//		Task task = new Task();
+//		task.setTaskName("Clean the room");
+//		task.setOwner("Prasanna");
+//		task.setStartDate(LocalDateTime.of(2021, 10, 03, 10, 20));
+//		task.setEndDate(LocalDateTime.of(2021, 11, 04, 12, 34));
+//		task.setDuration(50);
+//		task.setCategory("House Keeping");
+//		task.setPriority(Priority.LOW);
+//		task.setStatus(Status.DEFINED);
+//		TravelAgent agent = new TravelAgent();
+//
+//		System.out.println(taskService.addTask(task));
 
 	}
 

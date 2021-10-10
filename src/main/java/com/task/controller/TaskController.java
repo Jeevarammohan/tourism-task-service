@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.task.model.Priority;
@@ -37,7 +37,7 @@ public class TaskController {
 		Task ntask = taskService.addTask(task);
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("desc", "Task is added");
-		return ResponseEntity.ok().body(ntask);
+		return ResponseEntity.status(HttpStatus.CREATED).body(ntask);
 
 	}
 
@@ -46,7 +46,7 @@ public class TaskController {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("desc", "Task is updated");
 		taskService.updateTask(task);
-		return ResponseEntity.ok().headers(headers).build();
+		return ResponseEntity.accepted().headers(headers).build();
 	}
 
 	@DeleteMapping("/tasks/task-id/{taskId}")
@@ -70,6 +70,14 @@ public class TaskController {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("desc", "All Tasks are retrieved");
 		List<Task> taskList = taskService.getAllTask();
+		return ResponseEntity.ok().body(taskList);
+	}
+
+	@GetMapping("/tasks/task-name/{taskName}")
+	ResponseEntity<List<Task>> getByName(@PathVariable("taskName") String taskName) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("desc", "All Tasks are retrieved by owner");
+		List<Task> taskList = taskService.getByName(taskName);
 		return ResponseEntity.ok().body(taskList);
 	}
 
@@ -130,7 +138,7 @@ public class TaskController {
 		return ResponseEntity.accepted().body(worker);
 
 	}
-	
+
 	@GetMapping("/tasks/workers/task-id/{taskId}/worker-id/{workerId}/free")
 	ResponseEntity<Worker> removeTaskFromWorker(@PathVariable("taskId") Integer taskId,
 			@PathVariable("workerId") Integer workerId) {
@@ -138,7 +146,6 @@ public class TaskController {
 		return ResponseEntity.accepted().body(worker);
 
 	}
-
 
 	@GetMapping("/tasks/workers/worker-name/{workerName}")
 	ResponseEntity<List<Worker>> getWorkerByName(@PathVariable("workername") String workerName) {
