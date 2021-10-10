@@ -3,6 +3,8 @@ package com.task.service;
 import java.util.List;
 
 import com.task.exception.TaskNotFoundException;
+import com.task.model.Priority;
+import com.task.model.Status;
 import com.task.model.Task;
 import com.task.model.Worker;
 
@@ -22,13 +24,19 @@ public interface ITaskService {
 
 	List<Task> getAllTask();
 
+	List<Task> getByName(String taskName) throws TaskNotFoundException;
+
 	List<Task> getByOwner(String owner) throws TaskNotFoundException;
 
 	List<Task> getByCategory(String category) throws TaskNotFoundException;
 
-	List<Task> getByPriority(String priority) throws TaskNotFoundException;
+	List<Task> getByPriority(Priority priority) throws TaskNotFoundException;
 
-	List<Task> getByStatus(String status) throws TaskNotFoundException;
+	List<Task> getByStatus(Status status) throws TaskNotFoundException;
+	
+	Worker assignTask(Integer taskId,Integer workerId) throws TaskNotFoundException;
+	
+	Worker removeTask(Integer taskId,Integer workerId) throws TaskNotFoundException;
 
 	String updateWorker(Worker worker);
 

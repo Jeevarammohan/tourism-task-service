@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.task.model.Priority;
+import com.task.model.Status;
 import com.task.model.Task;
 import com.task.model.Worker;
 import com.task.service.ITaskService;
@@ -24,7 +26,7 @@ import com.task.service.ITaskService;
  *
  */
 @RestController
-@RequestMapping("/task-service")
+@RequestMapping("/task-api")
 public class TaskController {
 
 	@Autowired
@@ -55,7 +57,7 @@ public class TaskController {
 		return ResponseEntity.ok().headers(headers).build();
 	}
 
-	@GetMapping("/task/{taskId}")
+	@GetMapping("/tasks/{taskId}")
 	ResponseEntity<Task> getByTaskId(@PathVariable("taskId") Integer taskId) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("desc", "Task is retrieved by id");
@@ -91,7 +93,7 @@ public class TaskController {
 	ResponseEntity<List<Task>> getByPriority(@PathVariable("priority") String priority) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("desc", "All Tasks are retrieved by priority");
-		List<Task> taskList = taskService.getByPriority(priority);
+		List<Task> taskList = taskService.getByPriority(Priority.valueOf(priority));
 		return ResponseEntity.ok().body(taskList);
 	}
 
@@ -99,7 +101,7 @@ public class TaskController {
 	ResponseEntity<List<Task>> getByStatus(@PathVariable("status") String status) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("desc", "All Tasks are retrieved by status");
-		List<Task> taskList = taskService.getByStatus(status);
+		List<Task> taskList = taskService.getByStatus(Status.valueOf(status));
 		return ResponseEntity.ok().body(taskList);
 	}
 
@@ -120,6 +122,23 @@ public class TaskController {
 		List<Worker> allWorkers = taskService.getAllWorkers();
 		return ResponseEntity.ok().body(allWorkers);
 	}
+
+	@GetMapping("/tasks/workers/task-id/{taskId}/worker-id/{workerId}/assign")
+	ResponseEntity<Worker> assignTaskToWorker(@PathVariable("taskId") Integer taskId,
+			@PathVariable("workerId") Integer workerId) {
+		Worker worker = taskService.assignTask(taskId, workerId);
+		return ResponseEntity.accepted().body(worker);
+
+	}
+	
+	@GetMapping("/tasks/workers/task-id/{taskId}/worker-id/{workerId}/free")
+	ResponseEntity<Worker> removeTaskFromWorker(@PathVariable("taskId") Integer taskId,
+			@PathVariable("workerId") Integer workerId) {
+		Worker worker = taskService.removeTask(taskId, workerId);
+		return ResponseEntity.accepted().body(worker);
+
+	}
+
 
 	@GetMapping("/tasks/workers/worker-name/{workerName}")
 	ResponseEntity<List<Worker>> getWorkerByName(@PathVariable("workername") String workerName) {

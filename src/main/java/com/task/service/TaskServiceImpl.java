@@ -3,15 +3,16 @@ package com.task.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import com.task.exception.TaskCategoryNotFoundException;
+import com.task.exception.TaskNameNotFoundException;
 import com.task.exception.TaskNotFoundException;
+import com.task.exception.TaskOwnerNotFoundException;
+import com.task.model.Priority;
+import com.task.model.Status;
 import com.task.model.Task;
 import com.task.model.Worker;
 import com.task.repository.ITaskRepository;
@@ -25,8 +26,8 @@ public class TaskServiceImpl implements ITaskService {
 
 	@Autowired
 	RestTemplate restTemplate;
-	@Autowired
-	private static final String BASEURL = "http://WORKER-SERVICE/worker-service/";
+
+	private static final String BASEURL = "http://WORKER-SERVICE/worker-api/";
 
 	@Autowired
 	private ITaskRepository taskRepository;
@@ -48,7 +49,11 @@ public class TaskServiceImpl implements ITaskService {
 
 	@Override
 	public Task getByTaskId(Integer taskId) throws TaskNotFoundException {
-		return taskRepository.findById(taskId).get();
+		Task task = taskRepository.findById(taskId).get();
+		if (task == null) {
+			throw new TaskNotFoundException("Invalid task Id");
+		}
+		return task;
 	}
 
 	@Override
@@ -57,23 +62,70 @@ public class TaskServiceImpl implements ITaskService {
 	}
 
 	@Override
+	public List<Task> getByName(String taskName) throws TaskNotFoundException {
+		List<Task> tasksByName = taskRepository.findByTaskName(taskName);
+		if (tasksByName.isEmpty()) {
+			throw new TaskNameNotFoundException("Invalid Task Name! Give a valid Task name");
+		}
+		return tasksByName;
+	}
+
+	@Override
 	public List<Task> getByCategory(String category) throws TaskNotFoundException {
-		return taskRepository.findByCategory(category);
+		List<Task> tasksByCategory = taskRepository.findByCategory(category);
+		if (tasksByCategory.isEmpty()) {
+			throw new TaskCategoryNotFoundException("Invalid Task Category! Give a valid category");
+		}
+		return tasksByCategory;
 	}
 
 	@Override
-	public List<Task> getByPriority(String priority) throws TaskNotFoundException {
-		return taskRepository.findByPriority(priority);
+	public List<Task> getByPriority(Priority priority) throws TaskNotFoundException {
+
+		List<Task> tasksByPriority = taskRepository.findByPriority(priority);
+		if (tasksByPriority.isEmpty()) {
+			throw new TaskNotFoundException("Invalid Task priority! Give a valid priority");
+		}
+		return tasksByPriority;
 	}
 
 	@Override
-	public List<Task> getByStatus(String status) throws TaskNotFoundException {
+	public List<Task> getByStatus(Status status) throws TaskNotFoundException {
 		return taskRepository.findByStatus(status);
 	}
 
 	@Override
 	public List<Task> getByOwner(String owner) throws TaskNotFoundException {
-		return taskRepository.findByOwner(owner);
+		List<Task> tasksByOwner = taskRepository.findByOwner(owner);
+		if (tasksByOwner.isEmpty()) {
+			throw new TaskOwnerNotFoundException("Invalid Task owner! Give a valid owner name");
+		}
+		return tasksByOwner;
+	}
+
+	@Override
+	public Worker assignTask(Integer taskId, Integer workerId) throws TaskNotFoundException {
+		String url = BASEURL + "workers/" + workerId;
+		String postUrl = BASEURL + "workers";
+		ResponseEntity<Worker> workerResponse = restTemplate.getForEntity(url, Worker.class);
+		Worker worker = workerResponse.getBody();
+		Task task=getByTaskId(taskId);
+		worker.setTask(task);
+		ResponseEntity<Worker> response = restTemplate.postForEntity(postUrl, worker, Worker.class);
+		return response.getBody();
+
+	}
+	
+	@Override
+	public Worker removeTask(Integer taskId, Integer workerId) throws TaskNotFoundException {
+		String url = BASEURL + "workers/" + workerId;
+		String postUrl = BASEURL + "workers";
+		ResponseEntity<Worker> workerResponse = restTemplate.getForEntity(url, Worker.class);
+		Worker worker = workerResponse.getBody();
+		Task task=getByTaskId(taskId);
+		worker.setTask(null);
+		ResponseEntity<Worker> response = restTemplate.postForEntity(postUrl, worker, Worker.class);
+		return response.getBody();
 	}
 
 	@Override
@@ -126,5 +178,7 @@ public class TaskServiceImpl implements ITaskService {
 		ResponseEntity<List> response = restTemplate.getForEntity(url, List.class);
 		return response.getBody();
 	}
+
+
 
 }
