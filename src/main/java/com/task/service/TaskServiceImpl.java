@@ -106,14 +106,14 @@ public class TaskServiceImpl implements ITaskService {
 	@Override
 	public Worker assignTask(Integer taskId, Integer workerId) throws TaskNotFoundException {
 		String url = BASEURL + "workers/" + workerId;
-		String postUrl = BASEURL + "workers";
+		String updateUrl = BASEURL + "workers";
 		ResponseEntity<Worker> workerResponse = restTemplate.getForEntity(url, Worker.class);
 		Worker worker = workerResponse.getBody();
 		Task task = getByTaskId(taskId);
 		task.setStatus(Status.IN_PROGRESS);
 		updateTask(task);
 		worker.setTask(task);
-		ResponseEntity<Worker> response = restTemplate.postForEntity(postUrl, worker, Worker.class);
+		ResponseEntity<Worker> response = restTemplate.postForEntity(updateUrl, worker, Worker.class);
 		return response.getBody();
 
 	}
