@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,6 +41,7 @@ public class TravelPackage {
 	private Status status;
 	@ManyToOne
 	@JoinColumn(name = "agent_id")
+	@JsonIgnore
 	private TravelAgent travelAgent;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

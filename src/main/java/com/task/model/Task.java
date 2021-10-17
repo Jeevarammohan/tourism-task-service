@@ -1,9 +1,7 @@
 package com.task.model;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -13,8 +11,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -53,10 +53,12 @@ public class Task {
 	
 	@ManyToOne
 	@JoinColumn(name = "agent_id")
+	@JsonIgnore
 	private TravelAgent travelAgent;
 	
 	@ManyToOne
 	@JoinColumn(name = "package_id")
+	@JsonIgnore
 	private TravelPackage travelPackage;
 	
 	
