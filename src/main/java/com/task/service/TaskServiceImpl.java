@@ -27,7 +27,7 @@ public class TaskServiceImpl implements ITaskService {
 	@Autowired
 	RestTemplate restTemplate;
 
-	private static final String BASEURL = "http://WORKER-SERVICE/worker-api/";
+	private static final String BASEURL = "http://localhost:8084/worker-api/";
 
 	@Autowired
 	private ITaskRepository taskRepository;
@@ -113,6 +113,7 @@ public class TaskServiceImpl implements ITaskService {
 		task.setStatus(Status.IN_PROGRESS);
 		updateTask(task);
 		worker.setTask(task);
+		System.out.println(worker);
 		ResponseEntity<Worker> response = restTemplate.postForEntity(updateUrl, worker, Worker.class);
 		return response.getBody();
 

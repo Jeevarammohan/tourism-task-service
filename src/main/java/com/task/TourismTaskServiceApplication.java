@@ -30,7 +30,6 @@ public class TourismTaskServiceApplication implements CommandLineRunner {
 	}
 
 	@Bean
-	@LoadBalanced
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
