@@ -65,7 +65,8 @@ public class TaskServiceImpl implements ITaskService {
 	public List<Task> getByName(String taskName) throws TaskNotFoundException {
 		List<Task> tasksByName = taskRepository.findByTaskName(taskName);
 		if (tasksByName.isEmpty()) {
-			throw new TaskNameNotFoundException("Invalid Task Name! Give a valid Task name");
+			throw new TaskNameNotFoundException(
+					"Invalid Task Name! Give a valid Task name or task not available for the given task-name");
 		}
 		return tasksByName;
 	}
@@ -74,7 +75,8 @@ public class TaskServiceImpl implements ITaskService {
 	public List<Task> getByCategory(String category) throws TaskNotFoundException {
 		List<Task> tasksByCategory = taskRepository.findByCategory(category);
 		if (tasksByCategory.isEmpty()) {
-			throw new TaskCategoryNotFoundException("Invalid Task Category! Give a valid category");
+			throw new TaskCategoryNotFoundException(
+					"Invalid Task Category! Give a valid category or task not available for the given category");
 		}
 		return tasksByCategory;
 	}
@@ -84,21 +86,29 @@ public class TaskServiceImpl implements ITaskService {
 
 		List<Task> tasksByPriority = taskRepository.findByPriority(priority);
 		if (tasksByPriority.isEmpty()) {
-			throw new TaskNotFoundException("Invalid Task priority! Give a valid priority");
+			throw new TaskNotFoundException(
+					"Invalid Task priority! Give a valid priority or task not available for the given priority");
 		}
 		return tasksByPriority;
 	}
 
 	@Override
 	public List<Task> getByStatus(Status status) throws TaskNotFoundException {
-		return taskRepository.findByStatus(status);
+
+		List<Task> tasksByStatus = taskRepository.findByStatus(status);
+		if (tasksByStatus.isEmpty()) {
+			throw new TaskNotFoundException(
+					"Invalid Task Status! Give a valid status or task not available for the given status");
+		}
+		return tasksByStatus;
 	}
 
 	@Override
 	public List<Task> getByOwner(String owner) throws TaskNotFoundException {
 		List<Task> tasksByOwner = taskRepository.findByOwner(owner);
 		if (tasksByOwner.isEmpty()) {
-			throw new TaskOwnerNotFoundException("Invalid Task owner! Give a valid owner name");
+			throw new TaskOwnerNotFoundException(
+					"Invalid Task owner! Give a valid owner name or task not available for the given owner");
 		}
 		return tasksByOwner;
 	}
@@ -113,7 +123,6 @@ public class TaskServiceImpl implements ITaskService {
 		task.setStatus(Status.IN_PROGRESS);
 		updateTask(task);
 		worker.setTask(task);
-		System.out.println(worker);
 		ResponseEntity<Worker> response = restTemplate.postForEntity(updateUrl, worker, Worker.class);
 		return response.getBody();
 

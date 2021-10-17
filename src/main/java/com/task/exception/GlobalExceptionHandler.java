@@ -89,6 +89,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		APIErrors errors = new APIErrors(timeStamp, message, HttpStatus.EXPECTATION_FAILED.value(), error);
 		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(errors);
 	}
+
 	@ExceptionHandler(TaskIdNotFoundException.class)
 	protected ResponseEntity<Object> handleTaskIdNotFound(TaskIdNotFoundException ex) {
 		String message = ex.getMessage();
@@ -97,7 +98,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		APIErrors errors = new APIErrors(timeStamp, message, HttpStatus.EXPECTATION_FAILED.value(), error);
 		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(errors);
 	}
-	
+
 	@ExceptionHandler(TaskCategoryNotFoundException.class)
 	protected ResponseEntity<Object> handleTaskCategoryNotFound(TaskCategoryNotFoundException ex) {
 		String message = ex.getMessage();
@@ -106,7 +107,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		APIErrors errors = new APIErrors(timeStamp, message, HttpStatus.EXPECTATION_FAILED.value(), error);
 		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(errors);
 	}
-	
+
 	@ExceptionHandler(TaskOwnerNotFoundException.class)
 	protected ResponseEntity<Object> handleTaskOwnerNotFound(TaskOwnerNotFoundException ex) {
 		String message = ex.getMessage();
@@ -115,7 +116,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		APIErrors errors = new APIErrors(timeStamp, message, HttpStatus.EXPECTATION_FAILED.value(), error);
 		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(errors);
 	}
-	
+
+	@ExceptionHandler(TaskStatusNotFoundException.class)
+	protected ResponseEntity<Object> handleTaskStatusNotFound(TaskStatusNotFoundException ex) {
+		String message = ex.getMessage();
+		LocalDateTime timeStamp = LocalDateTime.now();
+		String error = "Task Owner Not Found";
+		APIErrors errors = new APIErrors(timeStamp, message, HttpStatus.EXPECTATION_FAILED.value(), error);
+		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(errors);
+	}
+
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<Object> handleOtherException(Exception ex) {
 		String message = ex.getMessage();
@@ -124,9 +134,5 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		APIErrors errors = new APIErrors(timeStamp, message, HttpStatus.EXPECTATION_FAILED.value(), error);
 		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(errors);
 	}
-	
-	
-	
-	
-	
+
 }
